@@ -142,6 +142,10 @@ def get_exported_track(
         return None
 
     track_context, beat_grid = track_info
+
+    if track_context is None:
+        return None
+
     return ExportedTrack(
         id=format_track_id(track_id),
         track_context=track_context,
@@ -173,6 +177,7 @@ def get_data_for_tracks(
         initargs=(db_location,),
     ) as pool:
         return list(
+            el for el in
             tqdm(
                 (
                     track
@@ -193,6 +198,7 @@ def get_data_for_tracks(
                 unit="track",
                 total=len(track_ids),
             )
+            if el is not None
         )
 
 
