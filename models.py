@@ -270,4 +270,5 @@ class ExportedTrack:
                 len(self.cue_points) % len(SERATO_COLOURS)
             ]
         cue_point.cue_position += self.offset_sec
+        cue_point.cue_position = max(0, cue_point.cue_position)
         self.cue_points.append(cue_point)
