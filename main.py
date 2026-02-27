@@ -11,6 +11,9 @@ arg_parser.add_argument(
     "--out-dir", type=str, help="Outputs tracks to a new directory."
 )
 arg_parser.add_argument(
+    "--virtual-out-dir", type=str, help="Rekordbox will find tracks in this location, requires --out-dir to be set"
+)
+arg_parser.add_argument(
     "--format",
     type=str,
     help="Change the file format of the tracks, requires --out-dir to be set.",
@@ -41,6 +44,7 @@ def main() -> None:
     args = arg_parser.parse_args()
     out_format: str | None = args.format
     out_dir: str | None = args.out_dir
+    virtual_out_dir: str | None = args.virtual_out_dir
     export_all: bool = args.export_all
     mixxx_db_location: str | None = args.mixxx_db_location
     key_type: KeyType = args.key_type or KeyType.LANCELOT
@@ -48,7 +52,7 @@ def main() -> None:
     collection_type: CollectionType = "crates" if use_crates else "playlists"
 
     export_to_rekordbox_xml(
-        out_format, out_dir, export_all, mixxx_db_location, key_type, collection_type
+        out_format, out_dir, export_all, mixxx_db_location, key_type, collection_type, virtual_out_dir
     )
 
 
