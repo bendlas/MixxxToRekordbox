@@ -38,6 +38,7 @@ def get_track_info(
     out_format: str | None,
     key_type: KeyType,
     export_semaphore: Semaphore,
+    virtual_out_dir: str | None
 ) -> tuple[TrackContext, BeatGridInfo | None] | None:
     track_info = sql_handlers.get_track_info(track_id)
     if track_info:
@@ -59,14 +60,12 @@ def get_track_info(
         ) = track_info
     else:
         return None
-
     if not Path.exists(track_location):
         print(f"File not found at {track_location}")
         return None
-
     if out_dir or out_format:
         track_location = change_track_location(
-            track_location, out_dir, out_format, export_semaphore
+            track_location, out_dir, out_format, export_semaphore, virtual_out_dir
         )
     if track_location.endswith(".ogg"):
         temp_path = Path.home().absolute() / "temp"
@@ -130,19 +129,17 @@ def get_exported_track(
     key_type: KeyType,
     export_semaphore: Semaphore,
     track_collection: dict,
+    virtual_out_dir: str | None
 ) -> ExportedTrack | None:
     if track_id in track_collection:
         return track_collection[track_id]
-
     track_info = get_track_info(
-        track_id, out_dir, out_format, key_type, export_semaphore
+        track_id, out_dir, out_format, key_type, export_semaphore, virtual_out_dir
     )
     if not track_info:
         print(f"No info found for Track {track_id}")
         return None
-
     track_context, beat_grid = track_info
-
     if track_context is None:
         return None
 
@@ -166,6 +163,7 @@ def get_data_for_tracks(
     out_format: str | None,
     key_type: KeyType,
     db_location: str | None,
+    virtual_out_dir: str | None,
 ) -> list[ExportedTrack]:
     manager = Manager()
     export_semaphore = manager.Semaphore(EXPORT_SEMAPHORE_COUNT)
@@ -189,6 +187,7 @@ def get_data_for_tracks(
                             key_type=key_type,
                             export_semaphore=export_semaphore,
                             track_collection=track_collection,
+                            virtual_out_dir=virtual_out_dir,
                         ),
                         track_ids,
                         chunksize=1 if out_format else 2,
@@ -212,6 +211,7 @@ def append_collection_to_element(
     out_format: str | None,
     key_type: KeyType,
     db_location: str | None,
+    virtual_out_dir: str | None,
 ) -> etree.Element:
     if (
         not export_all
@@ -223,7 +223,7 @@ def append_collection_to_element(
     track_ids = sql_handlers.get_collection_tracks(collection_type, collection_id)
 
     return generate_xml(
-        get_data_for_tracks(track_ids, out_dir, out_format, key_type, db_location),
+        get_data_for_tracks(track_ids, out_dir, out_format, key_type, db_location, virtual_out_dir),
         collection_name,
         xml_element,
     )
@@ -236,6 +236,7 @@ def export_to_rekordbox_xml(
     mixxx_db_location: str | None,
     key_type: KeyType,
     collection_type: CollectionType,
+    virtual_out_dir: str | None,
 ) -> None:
     db_location = sql_handlers.get_mixxx_db_location(mixxx_db_location)
     if out_format and not out_dir:
@@ -259,6 +260,7 @@ def export_to_rekordbox_xml(
             out_format,
             key_type,
             db_location,
+            virtual_out_dir,
         )
         flush_offset_errors()
         print("")
