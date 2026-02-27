@@ -14,9 +14,16 @@ BITRATE_MAP = {
     "aac": "256k",
 }
 
+FORMAT_MAP = {
+    "opus": "ogg"
+}
+
 
 def get_bitrate_from_format(out_format: str) -> str | None:
     return BITRATE_MAP.get(out_format.lower())
+
+def get_format_from_suffix(suffix: str) -> str:
+    return FORMAT_MAP.get(suffix) or suffix
 
 
 def transcode_track(
@@ -39,7 +46,7 @@ def transcode_track(
         in_format = "aiff"
 
     with export_semaphore:
-        segment = AudioSegment.from_file(track_path, format=in_format)
+        segment = AudioSegment.from_file(track_path, format=get_format_from_suffix(in_format))
         tags = TinyTag.get(track_path)
 
         segment.export(
