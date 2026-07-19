@@ -201,6 +201,7 @@ class TrackContext:
     genre: str
     duration: int
     location: str
+    source: str
     samplerate: int
     channels: int
     bpm: float
