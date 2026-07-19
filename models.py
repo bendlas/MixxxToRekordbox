@@ -274,7 +274,7 @@ class ExportedTrack:
     ):
         self.id = id
         self.track_context = track_context
-        self.offset_sec = get_offset_sec(self.track_context.location)
+        self.offset_sec = get_offset_sec(self.track_context.location, self.track_context.source)
         if beat_grid:
             self._add_beat_grid(beat_grid)
         self.cue_points = []

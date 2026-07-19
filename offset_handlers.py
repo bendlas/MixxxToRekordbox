@@ -73,7 +73,9 @@ def check_mp3_decoder_value(mp3_decoder: str) -> None:
         )
 
 
-def get_offset_ms(track_path: str | Path, mp3_decoder: Mp3Decoder) -> int:
+def get_offset_ms(
+    track_path: str | Path, source_path: str | Path, mp3_decoder: Mp3Decoder
+) -> int:
     path = Path(track_path)
     if path.suffix == ".m4a":
         return 48
@@ -87,8 +89,10 @@ def get_offset_ms(track_path: str | Path, mp3_decoder: Mp3Decoder) -> int:
     return 0
 
 
-def get_offset_sec(track_path: str | Path, mp3_decoder: Mp3Decoder = "MAD") -> float:
-    return get_offset_ms(track_path, mp3_decoder) / 1000.0
+def get_offset_sec(
+    track_path: str | Path, source_path: str | Path, mp3_decoder: Mp3Decoder = "MAD"
+) -> float:
+    return get_offset_ms(track_path, source_path, mp3_decoder) / 1000.0
 
 
 def flush_offset_errors() -> None:
