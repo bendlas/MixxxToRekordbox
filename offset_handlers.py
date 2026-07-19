@@ -76,16 +76,21 @@ def check_mp3_decoder_value(mp3_decoder: str) -> None:
 def get_offset_ms(
     track_path: str | Path, source_path: str | Path, mp3_decoder: Mp3Decoder
 ) -> int:
-    path = Path(track_path)
-    if path.suffix == ".m4a":
+    in_format = Path(source_path).suffix
+    out_format = Path(track_path).suffix
+    if out_format == ".m4a":
         return 48
-    if path.suffix == ".mp3":
+    elif in_format == out_format == ".mp3":
         try:
             audiofile = eyed3.load(track_path)
             return get_offset_mp3(audiofile, mp3_decoder)
         except Exception as ex:
             OFFSET_ERROR_MESSAGES.append(f"{track_path}: {ex}")
             return 0
+    elif in_format == ".flac" and out_format == ".wav":
+        return 0
+    elif in_format == ".flac" and out_format == ".mp3":
+        return 0
     return 0
 
 
