@@ -89,9 +89,9 @@ def get_offset_ms(
             OFFSET_ERROR_MESSAGES.append(f"{track_path}: {ex}")
             return 0
     elif in_format == ".flac" and out_format == ".wav":
-        return 0
+        return 26
     elif in_format == ".flac" and out_format == ".mp3":
-        return 0
+        return 26
 
     print(
         f"Warning: transcoding from {in_format} to {out_format} is experimental and may result in misaligned cues",
