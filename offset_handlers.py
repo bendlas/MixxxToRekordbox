@@ -3,6 +3,7 @@
 from logging import ERROR
 from pathlib import Path
 from typing import Literal
+import sys
 
 import eyed3.mp3.headers  # type: ignore
 
@@ -91,6 +92,12 @@ def get_offset_ms(
         return 0
     elif in_format == ".flac" and out_format == ".mp3":
         return 0
+
+    print(
+        f"Warning: transcoding from {in_format} to {out_format} is experimental and may result in misaligned cues",
+        file=sys.stderr
+    )
+
     return 0
 
 
