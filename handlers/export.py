@@ -67,9 +67,12 @@ def get_track_info(
 
     track_source = track_location
 
+    # When no virtual out dir is given, the XML should point to where the
+    # files actually land, so fall back to out_dir.
+    effective_virtual_out_dir = virtual_out_dir or out_dir
     if out_dir or out_format:
         track_location = change_track_location(
-            track_location, out_dir, out_format, export_semaphore, virtual_out_dir
+            track_location, out_dir, out_format, export_semaphore, effective_virtual_out_dir
         )
     if track_location.endswith(".ogg"):
         temp_path = Path.home().absolute() / "temp"
@@ -80,6 +83,7 @@ def get_track_info(
             str(temp_path),
             "mp3",
             export_semaphore,
+            str(temp_path),
         )
         print(f"New track created at: {track_location}")
 

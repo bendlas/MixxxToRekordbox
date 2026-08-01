@@ -35,12 +35,14 @@ def transcode_track(
 ) -> str:
     in_format = track_path.suffix[1:]
     new_file = out_path.joinpath(f"{track_path.stem}.{out_format}")
+    virtual_file = virtual_out_path.joinpath(f"{track_path.stem}.{out_format}")
 
     if new_file.exists():
-        return str(new_file)
+        return str(virtual_file)
 
     if in_format == out_format:
-        return str(track_path.copy(new_file))
+        shutil.copy2(track_path, new_file)
+        return str(virtual_file)
 
     if in_format == "aif":
         in_format = "aiff"
