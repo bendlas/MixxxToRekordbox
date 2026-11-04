@@ -200,9 +200,12 @@ class TrackContext:
     album: str
     genre: str
     comment: str
+    year: str
+    composer: str
+    tracknumber: str
+    source: str 
     duration: int
     location: str
-    source: str
     samplerate: int
     channels: int
     bpm: float

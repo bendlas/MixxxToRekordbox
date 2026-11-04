@@ -54,6 +54,11 @@ def get_track_info(
             album,
             genre,
             comment,
+            year,
+            #remixer,
+            composer,
+            tracknumber,
+            source,
             bpm,
             beats,
             beats_version,
@@ -74,7 +79,7 @@ def get_track_info(
     # When no virtual out dir is given, the XML should point to where the
     # files actually land, so fall back to out_dir.
     effective_virtual_out_dir = virtual_out_dir or out_dir
-    if out_dir or out_format:
+    if out_dir and out_format:
         track_location = change_track_location(
             track_location, out_dir, out_format, export_semaphore, effective_virtual_out_dir
         )
@@ -100,7 +105,10 @@ def get_track_info(
         artist=artist or "",
         album=album or "",
         genre=genre or "",
-        comment=comment or "",  # <-- ADD THIS LINE
+        comment=comment or "",
+        year=str(year or ""),
+        composer=str(composer or ""),
+        tracknumber=str(tracknumber or ""),
         bpm=float(bpm) or 0.0,
         location=track_location,
         source=track_source,

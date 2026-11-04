@@ -75,12 +75,16 @@ def create_track_elm(track: ExportedTrack) -> etree.Element:
         Artist=track.track_context.artist,
         Album=track.track_context.album,
         Genre=track.track_context.genre,
-        Comments=track.track_context.comment,  # <-- ADD THIS (Plural 'Comments')
+        Comments=track.track_context.comment,
+        Year=str(track.track_context.year),
+        #Remixer=track.track_context.remixer,
+        Composer=track.track_context.composer,
+        TrackNumber=track.track_context.tracknumber,
         SampleRate=str(track.track_context.samplerate),
         AverageBpm=str(track.track_context.bpm),
         Tonality=str(track.track_context.key),
         Rating=str(track.track_context.rating),
-        Color=rb_color,                         # <-- CHANGE THIS (Spelled 'Color')
+        Color=rb_color,
         Location="file://localhost/" + track.track_context.location
         if platform.system() == "Windows"
         else "file://localhost" + track.track_context.location,
