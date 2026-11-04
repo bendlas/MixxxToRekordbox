@@ -49,6 +49,7 @@ def get_track_info(
             artist,
             album,
             genre,
+            comment,
             bpm,
             beats,
             beats_version,
@@ -60,7 +61,7 @@ def get_track_info(
     else:
         return None
 
-    if not Path.exists(track_location):
+    if not Path(track_location).exists():
         print(f"File not found at {track_location}")
         return None
 
@@ -89,6 +90,7 @@ def get_track_info(
         artist=artist or "",
         album=album or "",
         genre=genre or "",
+        comment=comment or "",  # <-- ADD THIS LINE
         bpm=float(bpm) or 0.0,
         location=track_location,
         key=key_type.get_key(key_id),

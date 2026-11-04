@@ -199,6 +199,7 @@ class TrackContext:
     artist: str
     album: str
     genre: str
+    comment: str
     duration: int
     location: str
     samplerate: int

@@ -22,6 +22,7 @@ TRACK_INFO_QUERY = """
                     l.artist,
                     l.album,
                     l.genre,
+                    l.comment,
                     l.bpm,
                     l.beats,
                     l.beats_version,

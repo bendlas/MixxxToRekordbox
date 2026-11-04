@@ -31,6 +31,43 @@ def set_length_key(key: str, element: etree.Element) -> None:
 
 
 def create_track_elm(track: ExportedTrack) -> etree.Element:
+    rb_color = ""
+    if track.track_context.colour is not None:
+        try:
+            val = int(track.track_context.colour)
+            
+            if val < 0:
+                val = (val & 0xFFFFFFFF)
+            
+            r = (val >> 16) & 0xFF
+            g = (val >> 8) & 0xFF
+            b = val & 0xFF
+
+            # Uncolored neutral fallback
+            if abs(r - g) < 20 and abs(g - b) < 20 and abs(r - b) < 20:
+                rb_color = ""
+            
+            # Map groupings directly to Pioneer's strict official XML hex palette
+            else:
+                if r > 130 and g < 100 and b < 130:
+                    rb_color = "CE3239"  # Pioneer Red
+                elif r > 180 and 90 <= g <= 175 and b < 100:
+                    rb_color = "EF8130"  # Pioneer Orange
+                elif r > 160 and g > 160 and b < 140:
+                    rb_color = "F4D338"  # Pioneer Yellow
+                elif g > r and g > b:
+                    rb_color = "20C670"  # Pioneer Green
+                elif g > 130 and b > 130 and abs(g - b) < 70:
+                    rb_color = "00A8A9"  # Pioneer Cyan
+                elif b > r and b > g:
+                    rb_color = "1571E2"  # Pioneer Blue
+                elif r > 110 and b > 110:
+                    rb_color = "AA55C4"  # Pioneer Purple
+                else:
+                    rb_color = ""   # Unknown colors go clean/transparent
+                    
+        except (ValueError, TypeError):
+            rb_color = ""
     track_elm = E.TRACK(
         TrackID=str(track.id),
         TotalTime=str(track.track_context.duration),
@@ -38,11 +75,12 @@ def create_track_elm(track: ExportedTrack) -> etree.Element:
         Artist=track.track_context.artist,
         Album=track.track_context.album,
         Genre=track.track_context.genre,
+        Comments=track.track_context.comment,  # <-- ADD THIS (Plural 'Comments')
         SampleRate=str(track.track_context.samplerate),
         AverageBpm=str(track.track_context.bpm),
         Tonality=str(track.track_context.key),
         Rating=str(track.track_context.rating),
-        Colour=str(track.track_context.colour),
+        Color=rb_color,                         # <-- CHANGE THIS (Spelled 'Color')
         Location="file://localhost/" + track.track_context.location
         if platform.system() == "Windows"
         else "file://localhost" + track.track_context.location,
